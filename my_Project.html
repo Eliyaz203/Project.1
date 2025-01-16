@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA Verification</title>
+    <style>
+        /* Global reset and font styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #ff7e5f, #feb47b, #ffcc70, #ff9a8b);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Floating particles effect */
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleAnimation 10s infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes particleAnimation {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Custom particle generation using JavaScript */
+        .particle {
+            width: 8px;
+            height: 8px;
+            animation-duration: calc(10s + (Math.random() * 5s));
+            animation-delay: calc(-10s + (Math.random() * 15s));
+        }
+
+        /* CAPTCHA container */
+        .captcha-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 350px;
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .captcha {
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .input-container {
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 80%;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .next-btn {
+            background-color: #007bff;
+        }
+        .next-btn:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="captcha-container">
+        <h1>CAPTCHA Verification</h1>
+        <div id="captcha" class="captcha">1234</div>
+
+        <div class="input-container">
+            <input type="text" id="captchaInput" placeholder="Enter CAPTCHA">
+        </div>
+        <button onclick="validateCaptcha()">Submit</button>
+
+        <div id="errorMessage" class="error"></div>
+
+        <!-- Next button -->
+        <button id="nextButton" class="next-btn" style="display: none;" onclick="goToRandomWebsite()">Next</button>
+    </div>
+
+    <!-- JavaScript to handle the CAPTCHA generation and validation -->
+    <script>
+        // Generate a random CAPTCHA string
+        function generateCaptcha() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById('captcha').textContent = captcha;
+        }
+
+        // Validate the CAPTCHA entered by the user
+        function validateCaptcha() {
+            const enteredCaptcha = document.getElementById('captchaInput').value;
+            const displayedCaptcha = document.getElementById('captcha').textContent;
+            const errorMessage = document.getElementById('errorMessage');
+            const nextButton = document.getElementById('nextButton');
+
+            if (enteredCaptcha === displayedCaptcha) {
+                errorMessage.textContent = "CAPTCHA verified successfully!";
+                errorMessage.style.color = "green";
+
+                // Show the "Next" button
+                nextButton.style.display = "inline-block";
+            } else {
+                errorMessage.textContent = "Incorrect CAPTCHA. Please try again.";
+                errorMessage.style.color = "red";
+                generateCaptcha(); // Regenerate CAPTCHA if incorrect
+            }
+        }
+
+        // Redirect to a random website from a list when the "Next" button is clicked
+        function goToRandomWebsite() {
+            const websites = [
+                "https://www.example.com",
+                "https://www.google.com",
+                "https://www.github.com",
+                "https://www.stackoverflow.com"
+            ];
+
+            const randomWebsite = websites[Math.floor(Math.random() * websites.length)];
+            window.location.href = randomWebsite;
+        }
+
+        // Regenerate CAPTCHA when the page loads
+        generateCaptcha();
+
+        // Generate floating particles in the background
+        function createParticles() {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${5 + Math.random() * 5}s`;
+                document.body.appendChild(particle);
+            }
+        }
+
+        // Create particles on page load
+        createParticles();
+    </script>
+
+</body>
+</html>
